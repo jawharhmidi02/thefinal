@@ -1,0 +1,24 @@
+# Dockerfile for Hadoop Namenode with JDK 17
+FROM openjdk:17-slim
+
+# Install necessary dependencies
+RUN apt-get update && apt-get install -y wget ssh rsync
+
+# Download and install Hadoop
+ENV HADOOP_VERSION=3.2.1
+ENV HADOOP_URL=https://archive.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz
+
+RUN wget --quiet ${HADOOP_URL} -O /tmp/hadoop.tar.gz && tar -xzf /tmp/hadoop.tar.gz -C /opt/ && rm /tmp/hadoop.tar.gz
+
+# Set Hadoop environment variables
+ENV HADOOP_HOME=/opt/hadoop-${HADOOP_VERSION}
+ENV PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+
+# Copy configuration files (if you have custom configs)
+# COPY hadoop-config-files/ ${HADOOP_HOME}/etc/hadoop/
+
+# Expose necessary ports
+EXPOSE 9870 9000
+
+# Default command
+CMD ["/bin/bash"]
